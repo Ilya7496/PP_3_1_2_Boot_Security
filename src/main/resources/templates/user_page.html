@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+</head>
+<body>
+<style>
+    table, th, td {
+        border: 1px solid black;
+        text-align: center; /* Горизонтальное выравнивание */
+        vertical-align: middle; /* Вертикальное выравнивание */
+    }
+</style>
+
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Last Name</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${user_page}">
+            <td th:text="${user.getName()}"></td>
+            <td th:text="${user.getLastName()}"></td>
+            <td>
+                <ul>
+                    <li th:each="user : ${user_page}" th:text="${user_page.getAuthorities()}"></li>
+                </ul>
+            </td>
+            <td>
+                <div class="buttons-container">
+                    <form th:method="get" th:action="@{/logout}">
+                        <input type="submit" value="Log out" class="update-button">
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<style>
+    .buttons-container {
+        display: flex;
+        gap: 10px; /* Отступ между кнопками */
+    }
+
+    .update-button,
+    .delete-button {
+        padding: 5px 10px; /* Поля вокруг текста кнопок */
+        border: none;
+        background-color: #009900; /* Синяя фоновая цвет */
+        color: black; /* Белый текст */
+        cursor: pointer;
+    }
+
+    .update-button:hover,
+    .delete-button:hover {
+        background-color: #33CC33; /* Темно-синий фон при наведении */
+    }
+</style>
+</body>
+</html>
