@@ -10,6 +10,8 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
@@ -26,13 +28,13 @@ public class AdminController {
 
     @PostMapping
     public String create(@ModelAttribute("create_user") User user,
-                         @RequestParam("roles") Collection<Long> selectById) {
+                         @RequestParam("roles") Set<Long> selectById) {
         if(user != null) {
-            Collection<Role> list = new ArrayList<>();
+            Set<Role> roles = new HashSet<>();
             for (Long newRole : selectById) {
-                list.addAll(roleService.getRoleById(newRole));
+                roles.addAll(roleService.getRoleById(newRole));
             }
-            user.setRoles(list);
+            user.setRoles(roles);
             userService.save(user);
         }
         return "redirect:/admin/allusers";
@@ -40,7 +42,7 @@ public class AdminController {
 
     @GetMapping("/user/new")
     public String newUser(@ModelAttribute("newUser") User user, Model model) {
-        Collection<Role> rolesList = roleService.getAllRoles();
+        Set<Role> rolesList = new HashSet<>(roleService.getAllRoles());
         model.addAttribute("list_role", rolesList);
         return "new_user";
     }
@@ -66,7 +68,7 @@ public class AdminController {
     @GetMapping("/user/update")
     public String pageUpdate(@RequestParam("id") long id, Model model) {
         model.addAttribute("up_user", userService.upPage(id));
-        model.addAttribute("update_role", roleService.getAllRoles());
+        model.addAttribute("update_role", new HashSet<>(roleService.getAllRoles()));
         return "update_user";
     }
     @PostMapping("/user/edit")
@@ -75,17 +77,17 @@ public class AdminController {
                          @RequestParam("name") String name,
                          @RequestParam("lastName") String lastname,
                          @RequestParam("password") String password,
-                         @RequestParam("role") Collection<Long> roleById) {
-        Collection<Role> list = new ArrayList<>();
+                         @RequestParam("role") Set<Long> roleById) {
+        Set<Role> roles = new HashSet<>();
         for (Long upRole : roleById) {
-            list.addAll(roleService.getRoleById(upRole));
+            roles.addAll(roleService.getRoleById(upRole));
         }
-        user.setRoles(list);
-        userService.update(id, name, lastname, password, list);
+        user.setRoles(roles);
+        userService.update(id, name, lastname, password, roles);
         return "redirect:/admin/allusers";
     }
 
-    @GetMapping("/userpage")
+    @GetMapping("/user")
     public String userPageAdmin(@RequestParam("id") long id, Model model) {
         model.addAttribute("user_page", userService.upPage(id));
         return "user_page";

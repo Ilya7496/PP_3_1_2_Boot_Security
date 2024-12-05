@@ -34,12 +34,12 @@ public class User implements UserDetails {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+    private Set<Role> roles = new HashSet<>();;
 
     public User() {
     }
 
-    public User(String name, String lastName, String password, Collection<Role> roles) {
+    public User(String name, String lastName, String password, Set<Role> roles) {
         this.name = name;
         this.lastName = lastName;
         this.password = password;
@@ -78,7 +78,7 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -141,4 +141,5 @@ public class User implements UserDetails {
     }
 
 }
+
 

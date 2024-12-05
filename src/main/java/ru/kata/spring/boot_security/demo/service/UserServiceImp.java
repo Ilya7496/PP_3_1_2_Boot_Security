@@ -1,11 +1,13 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDAO;
 import ru.kata.spring.boot_security.demo.dao.UserDAO;
 import ru.kata.spring.boot_security.demo.entities.Role;
 import ru.kata.spring.boot_security.demo.entities.User;
+
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
@@ -18,11 +20,14 @@ public class UserServiceImp implements UserService {
 
 
     private final UserDAO userDao;
-
     private final RoleDAO roleDao;
-    public UserServiceImp(UserDAO userDao, RoleDAO roleDao) {this.userDao = userDao;
+    private final PasswordEncoder passwordEncoder;
 
+    public UserServiceImp(UserDAO userDao, RoleDAO roleDao, PasswordEncoder passwordEncoder) {
+
+        this.userDao = userDao;
         this.roleDao = roleDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
@@ -52,17 +57,18 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.save(user);
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<User> read() {
         return userDao.read();
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public User getUserByName(String name) { return userDao.getUserByName(name);
     }
 
@@ -74,8 +80,13 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public User update(long id, String name, String lastname, String password, Collection<Role> role) {
-        return userDao.update(id, name, lastname, password, role);
+    public User update(long id, String name, String lastname, String password, Set<Role> role) {
+        User user = userDao.upPage(id);
+        user.setName(name);
+        user.setLastName(lastname);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRoles(role);
+        return userDao.update(user.getId(), name, lastname, user.getPassword(), role);
     }
 
     @Override

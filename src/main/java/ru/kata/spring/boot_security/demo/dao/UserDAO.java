@@ -8,6 +8,7 @@ import ru.kata.spring.boot_security.demo.entities.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface UserDAO {
 
@@ -16,7 +17,7 @@ public interface UserDAO {
 
     List<User> read();
 
-    User update(long id, String name, String lastname, String password, Collection<Role> role);
+    User update(long id, String name, String lastname, String password, Set<Role> role);
 
     void delete(long id);
 

@@ -19,8 +19,7 @@ public class UsersController {
     }
 
 
-
-    @GetMapping("/userpage")
+    @GetMapping("/user")
     public String userPage(Principal principal, Model model) {
         model.addAttribute("user_page", userService.getUserByName(principal.getName()));
         return "user_page";
