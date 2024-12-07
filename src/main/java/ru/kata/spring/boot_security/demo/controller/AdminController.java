@@ -92,6 +92,10 @@ public class AdminController {
         model.addAttribute("user_page", userService.upPage(id));
         return "user_page";
     }
+    @GetMapping
+    public String adminHomeRedirect() {
+        return "redirect:/admin/allusers";
+    }
 
 
 }
